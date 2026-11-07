@@ -140,8 +140,9 @@ a { color: var(--blue); text-decoration: none; }
 .logo-mark.live .sheen { transform: translateX(-80px); animation: sheenLoop 6s ease-in-out 1s infinite; }
 @keyframes sheenLoop { 0% { transform: translateX(-80px); } 30%, 100% { transform: translateX(240px); } }
 
+/* لو الويندوز قافل الأنيميشن، بنهدّي حركة الصفحات بس — شاشة البداية بتفضل شغالة */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
+  .page, .pnote, .modal, .toast { animation-duration: .01ms !important; }
 }
 
 /* ============ تسجيل الدخول ============ */

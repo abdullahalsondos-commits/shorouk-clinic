@@ -74,7 +74,15 @@ async function createSupabaseDB(cfg) {
     async signIn(login, password, remember = true) {
       setRemember(remember);
       const { error } = await sb.auth.signInWithPassword({ email: toEmail(login), password });
-      if (error) throw new Error(/confirm/i.test(error.message) ? 'الحساب لسه متفعّلش' : 'اسم المستخدم أو الباسورد غلط');
+      if (error) {
+        console.error('signIn', error);
+        const m = String(error.message || '');
+        if (/confirm/i.test(m)) throw new Error('الحساب لسه متفعّلش — علّم على Auto Confirm في Supabase');
+        if (/invalid login credentials|invalid_credentials/i.test(m + ' ' + (error.code || ''))) throw new Error('اسم المستخدم أو الباسورد غلط');
+        if (/api key|apikey|jwt|unauthorized|forbidden/i.test(m)) throw new Error('مفتاح Supabase في js/config.js مش صح');
+        if (/fetch|network/i.test(m)) throw new Error('مش قادر أوصل لـ Supabase — اتأكد من النت ومن الـ Project URL');
+        throw new Error('معرفتش أدخل: ' + m);
+      }
     },
     async signOut() { await sb.auth.signOut(); },
     async changePassword(password) { const { error } = await sb.auth.updateUser({ password }); if (error) throw new Error(translate(error)); },
